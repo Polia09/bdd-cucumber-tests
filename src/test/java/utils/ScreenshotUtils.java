@@ -20,7 +20,7 @@ public class ScreenshotUtils {
             String safeFileName = convertToEnglish(screenshotName);
             String fileName = safeFileName + "_" + timestamp + ".png";
 
-            File destination = new File("test-results/screenshots/" + folder + "/" + fileName);
+            File destination = new File("target/screenshots/" + folder + "/" + fileName);
             destination.getParentFile().mkdirs();
             Files.copy(screenshot.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
 

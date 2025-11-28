@@ -2,7 +2,7 @@ package utils;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.time.Duration;
@@ -21,10 +21,14 @@ public class BrowserManager {
     public static void initializeDriver() {
         if (driver == null) {
             WebDriverManager.chromedriver().setup();
-            driver = new ChromeDriver();
-            driver.manage().window().maximize();
+
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--start-maximized");
+            options.addArguments("--disable-infobars");
+            options.addArguments("--disable-notifications");
+
+            driver = new ChromeDriver(options);
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-            System.out.println("Браузер запущен");
         }
     }
 
@@ -40,8 +44,6 @@ public class BrowserManager {
             driver.quit();
             driver = null;
             wait = null;
-            System.out.println("Браузер закрыт");
         }
     }
-
 }

@@ -7,18 +7,15 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
-                "src/test/resources/features/navigation/phones.feature",
-                "src/test/resources/features/navigation/photo_video.feature",
-                "src/test/resources/features/navigation/tablets.feature",
-                "src/test/resources/features/navigation/tv.feature",
-                "src/test/resources/features/navigation/watches.feature"
+                "src/test/resources/features/navigation"
         },
         glue = {"steps", "utils"},
         plugin = {
                 "pretty",
                 "html:target/cucumber-reports/cucumber-navigation.html",
                 "json:target/cucumber-reports/cucumber-navigation.json",
-                "junit:target/cucumber-reports/cucumber-navigation.xml"
+                "junit:target/cucumber-reports/cucumber-navigation.xml",
+                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
         },
         monochrome = true,
         publish = true

@@ -1,5 +1,6 @@
 package utils;
 
+import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -17,33 +18,35 @@ public class NavigationUtils {
         Actions actions = new Actions(driver);
 
         try {
-            System.out.println("Навигация: " + menu + " -> " + submenu + " -> " + section);
+            Allure.step("Навигация: " + menu + " -> " + submenu + " -> " + section);
 
+            Allure.step("Наводим курсор на меню: " + menu);
             WebElement catalogMenu = wait.until(
                     ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), '" + menu + "')]")));
             actions.moveToElement(catalogMenu).pause(Duration.ofMillis(500)).perform();
 
+            Allure.step("Наводим курсор на подменю: " + submenu);
             WebElement electronicsSubmenu = wait.until(
                     ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), '" + submenu + "')]")));
             actions.moveToElement(electronicsSubmenu).pause(Duration.ofMillis(500)).perform();
 
             String actualSectionName = convertToActualSectionName(section);
-            System.out.println("Ищем элемент с текстом: '" + actualSectionName + "'");
+            Allure.step("Ищем элемент с текстом: '" + actualSectionName + "'");
 
+            Allure.step("Выбираем раздел: " + section);
             WebElement targetSection = wait.until(
                     ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), '" + actualSectionName + "')]")));
-            System.out.println("Найден элемент: " + targetSection.getText());
+            Allure.step("Найден элемент: " + targetSection.getText());
             targetSection.click();
 
             wait.until(d -> ((JavascriptExecutor) d).executeScript("return document.readyState").equals("complete"));
-
             wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
 
-            System.out.println("Успешная навигация к: " + section);
+            Allure.step("Успешная навигация к: " + section);
 
         } catch (Exception e) {
             ScreenshotUtils.takeScreenshot(driver, "navigation_error_" + section, "errors");
-            System.err.println("Ошибка навигации к: " + section);
+            Allure.step("Ошибка навигации к разделу: " + section);
             throw e;
         }
     }
@@ -64,14 +67,14 @@ public class NavigationUtils {
             String actualTitle = driver.getTitle();
             boolean titleMatches = actualTitle.toLowerCase().contains(expectedTitle.toLowerCase());
 
-            assertTrue("Заголовок должен содержать: '" + expectedTitle + "', но был: '" + actualTitle + "'", titleMatches);
-            System.out.println("Заголовок корректен: " + actualTitle);
+            Allure.step("Проверяем заголовок страницы. Ожидаем: '" + expectedTitle + "', Фактический: '" + actualTitle + "'");
 
-            ScreenshotUtils.takeScreenshot(driver, "test_success_" + expectedTitle, "success");
+            assertTrue("Заголовок должен содержать: '" + expectedTitle + "', но был: '" + actualTitle + "'", titleMatches);
+            Allure.step("Заголовок корректен: " + actualTitle);
 
         } catch (Exception e) {
             ScreenshotUtils.takeScreenshot(driver, "test_error_" + expectedTitle, "errors");
-            System.err.println("Ошибка проверки заголовка: " + expectedTitle);
+            Allure.step("Ошибка проверки заголовка: " + expectedTitle);
             throw e;
         }
     }
