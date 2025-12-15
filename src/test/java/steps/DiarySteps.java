@@ -16,6 +16,12 @@ import java.util.List;
 
 public class DiarySteps {
 
+    private static final String SCROLL_CONTAINER_CSS = ".vb-content";
+    private static final String ARTICLE_PREVIEW_CSS = ".articlePreview.pageCreate__articlePreview";
+    private static final String TEXTAREA_CSS = "textarea.baseTextarea__text";
+    private static final String DELETE_BUTTON_CSS = ".articlePreview__buttons .articlePreview__button:last-child";
+    private static final String BUTTON_TAG = "button";
+
     private final WebDriver driver;
     private final WebDriverWait wait;
     private final JavascriptExecutor js;
@@ -27,13 +33,13 @@ public class DiarySteps {
     }
 
     private WebElement getScrollContainer() {
-        return wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".vb-content")));
+        return wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(SCROLL_CONTAINER_CSS)));
     }
 
     private void scrollToBottom() {
         WebElement container = getScrollContainer();
         js.executeScript("arguments[0].scrollTo(0, arguments[0].scrollHeight);", container);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".articlePreview.pageCreate__articlePreview")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(ARTICLE_PREVIEW_CSS)));
     }
 
     private void scrollToTop() {
@@ -47,7 +53,7 @@ public class DiarySteps {
         Allure.step("Добавляем " + numberOfNotes + " новых заметок");
 
         for (int i = 1; i <= numberOfNotes; i++) {
-            WebElement textarea = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("textarea.baseTextarea__text")));
+            WebElement textarea = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(TEXTAREA_CSS)));
             textarea.clear();
             textarea.sendKeys("Test note " + i);
 
@@ -60,7 +66,7 @@ public class DiarySteps {
             }
 
             final int expectedCount = i;
-            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(".articlePreview.pageCreate__articlePreview"), expectedCount - 1));
+            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(ARTICLE_PREVIEW_CSS), expectedCount - 1));
         }
     }
 
@@ -71,11 +77,11 @@ public class DiarySteps {
         scrollToTop();
 
         WebElement container = getScrollContainer();
-        List<WebElement> notesBefore = container.findElements(By.cssSelector(".articlePreview.pageCreate__articlePreview"));
+        List<WebElement> notesBefore = container.findElements(By.cssSelector(ARTICLE_PREVIEW_CSS));
         Assert.assertFalse("Нет заметок для удаления", notesBefore.isEmpty());
 
         WebElement firstNote = notesBefore.get(0);
-        WebElement deleteBtn = firstNote.findElement(By.cssSelector(".articlePreview__buttons .articlePreview__button:last-child"));
+        WebElement deleteBtn = firstNote.findElement(By.cssSelector(DELETE_BUTTON_CSS));
         js.executeScript("arguments[0].scrollIntoView(true);", firstNote);
         js.executeScript("arguments[0].click();", deleteBtn);
 
@@ -97,7 +103,7 @@ public class DiarySteps {
         scrollToBottom();
 
         WebElement container = getScrollContainer();
-        List<WebElement> notes = container.findElements(By.cssSelector(".articlePreview.pageCreate__articlePreview"));
+        List<WebElement> notes = container.findElements(By.cssSelector(ARTICLE_PREVIEW_CSS));
 
         Assert.assertTrue("Заметки должны присутствовать", notes.size() > 0);
 
@@ -105,7 +111,7 @@ public class DiarySteps {
     }
 
     private WebElement findAddButton() {
-        return driver.findElements(By.cssSelector("button")).stream()
+        return driver.findElements(By.cssSelector(BUTTON_TAG)).stream()
                 .filter(b -> b.getText().toLowerCase().contains("добавить") || b.getText().toLowerCase().contains("add"))
                 .findFirst()
                 .orElse(null);

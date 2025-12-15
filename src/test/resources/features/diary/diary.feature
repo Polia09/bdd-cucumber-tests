@@ -6,3 +6,4 @@ Feature: Diary functionality testing
     And User deletes the top note
     And User scrolls to the very bottom of diary page
     Then Pre-existing notes should remain unchanged
+

@@ -13,13 +13,6 @@ public class BrowserManager {
 
     public static WebDriver getDriver() {
         if (driver == null) {
-            initializeDriver();
-        }
-        return driver;
-    }
-
-    public static void initializeDriver() {
-        if (driver == null) {
             WebDriverManager.chromedriver().setup();
 
             ChromeOptions options = new ChromeOptions();
@@ -30,6 +23,7 @@ public class BrowserManager {
             driver = new ChromeDriver(options);
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         }
+        return driver;
     }
 
     public static WebDriverWait getWait() {

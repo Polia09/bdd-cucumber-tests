@@ -9,8 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScreenshotUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(ScreenshotUtils.class);
 
     public static void takeScreenshot(WebDriver driver, String screenshotName, String folder) {
         try {
@@ -24,10 +28,13 @@ public class ScreenshotUtils {
             destination.getParentFile().mkdirs();
             Files.copy(screenshot.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-            System.out.println("Скриншот сохранен: " + destination.getName());
+            logger.info("Скриншот сохранен: {}", destination.getAbsolutePath());
+            logger.debug("Имя файла: {}, Размер: {} bytes", fileName, screenshot.length());
 
         } catch (IOException e) {
-            System.out.println("Ошибка скриншота: " + e.getMessage());
+            logger.error("Ошибка при сохранении скриншота: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("Неожиданная ошибка при создании скриншота: {}", e.getMessage(), e);
         }
     }
 
